@@ -1,12 +1,18 @@
-function totalizator (num) {
-    var random_num = (Math.random() * (10));
-    var random_num_round = (Math.round(random_num))
-    if (num == random_num_round) {
-        console.log('Winner!')
-    }
-    else {
-        console.log('You lose! victory number:' + (random_num_round),', your number:' +(num))
-    }
+function totalizer (number) {
+  let randomNumber = (Math.random() * (10));
+  let randomNumberRound = (Math.round(randomNumber));
+
+  if (number === randomNumberRound) {
+   let result = ('Winner!');
+   console.log(result)
+   return result = true;
+  }
+  else {
+   let resultText = ('You lose! victory number:' + (randomNumberRound));
+   let result = resultText.concat(', your number:' +(number));
+   console.log(result)
+   return result = false;
+  }
 }
 
-totalizator(3)
+totalizer(3)
