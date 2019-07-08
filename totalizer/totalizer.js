@@ -1,17 +1,12 @@
 function totalizer (number) {
-  let randomNumber = (Math.random() * (10));
-  let randomNumberRound = (Math.round(randomNumber));
+  const randomNumber = (Math.random() * (10));
+  const randomNumberRound = (Math.round(randomNumber));
 
   if (number === randomNumberRound) {
-    let result = ('Winner!');
-    console.log(result)
-    return result = true;
+    return 'Winner';
   }
   else {
-    let resultText = ('You lose! victory number:' + (randomNumberRound));
-    let result = resultText.concat(', your number:' +(number));
-    console.log(result)
-    return result = false;
+    return 'You lost';
   }
 }
 
