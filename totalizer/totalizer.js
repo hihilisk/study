@@ -1,13 +1,8 @@
-function totalizer (number) {
-  const randomNumber = (Math.random() * (10));
-  const randomNumberRound = (Math.round(randomNumber));
-
-  if (number === randomNumberRound) {
+function totalizator (number) {
+  const randomNumber = Math.round(Math.random() * 10);
+  if (number === randomNumber) {
     return 'Winner';
-  }
-  else {
+  } else {
     return 'You lost';
   }
 }
-
-totalizer(3)
