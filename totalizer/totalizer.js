@@ -3,15 +3,15 @@ function totalizer (number) {
   let randomNumberRound = (Math.round(randomNumber));
 
   if (number === randomNumberRound) {
-   let result = ('Winner!');
-   console.log(result)
-   return result = true;
+    let result = ('Winner!');
+    console.log(result)
+    return result = true;
   }
   else {
-   let resultText = ('You lose! victory number:' + (randomNumberRound));
-   let result = resultText.concat(', your number:' +(number));
-   console.log(result)
-   return result = false;
+    let resultText = ('You lose! victory number:' + (randomNumberRound));
+    let result = resultText.concat(', your number:' +(number));
+    console.log(result)
+    return result = false;
   }
 }
 
