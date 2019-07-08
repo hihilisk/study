@@ -1,10 +1,8 @@
-def totalizer(num)
-  random_num = rand(10)
-  if random_num == num
-    return    p 'You win!'
+def totalizator(number)
+  random_number = rand(10)
+  if random_number == number
+    'Winner!'
   else
-    p "You lose! victory number: #{random_num}, your number: #{num}"
+    'You lost!'
   end
 end
-
-totalizator(4)
