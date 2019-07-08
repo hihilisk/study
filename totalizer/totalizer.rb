@@ -1,14 +1,10 @@
 def totalizer(number)
   random_number = rand(10)
   if random_number == number
-    result = 'Winner!'
-    p result
-    return result = true
+    return 'Winner!'
   else
-    result = "You lose! victory number: #{random_number}, your number: #{number}"
-    p result
-    return result = false
+    return 'You lost!'
   end
 end
 
-totalizer(rand(10))
+p totalizer(rand(10))
