@@ -1,8 +1,8 @@
 def totalizator(number)
   random_number = rand(10)
   if random_number == number
-    return 'Winner!'
+    'Winner!'
   else
-    return 'You lost!'
+    'You lost!'
   end
 end
