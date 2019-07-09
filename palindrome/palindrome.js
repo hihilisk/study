@@ -1,11 +1,7 @@
 function palindrome (string) {
-  const stringReverse = string.split("").reverse().join("");
-  const stringDelSpaces = string.replace(/\s/g,'');
-  const stringDelSpacesReverse = stringDelSpaces.split("").reverse().join("");
-
-  if (string === stringReverse) {
+  if (string === string.split("").reverse().join("")) {
       return 'It`s a palindrome';
-  } else if (stringDelSpaces === stringDelSpacesReverse) {
+  } else if (string.replace(/\s/g,'') === string.replace(/\s/g,'').split("").reverse().join("") ) {
       return 'It`s a palindrome, no spaces';
   } else {
       return 'It`s not a palindrome';
