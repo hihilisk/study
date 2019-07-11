@@ -11,5 +11,5 @@ def sort_array(unsorted_array)
       end
     end
   end
-  sorted_array = unsorted_array.join(', ')
+  sorted_array = unsorted_array
 end
