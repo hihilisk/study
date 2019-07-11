@@ -11,5 +11,6 @@ def sort_array(array)
       end
     end
   end
+
   array
 end

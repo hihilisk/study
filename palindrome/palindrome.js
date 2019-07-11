@@ -1,13 +1,11 @@
 function palindrome(value) {
-  let valueWithNoSpaces = value.replace(/\s/g,'');
-  switch (value) {
-    case value.split('').reverse().join(''):
-      return 'It`s a palindrome';
+  const valueWithNoSpaces = value.replace(/\s/g, '');
+
+  if (value === value.split('').reverse().join('')) {
+    return 'It`s palindrome';
+  } else if (valueWithNoSpaces === valueWithNoSpaces.split('').reverse().join('')) {
+    return 'With no spaces, it`s palindrome';
   }
-  switch (valueWithNoSpaces) {
-    case valueWithNoSpaces.split('').reverse().join(''):
-      return 'It`s a palindrome, no spaces';
-    default :
-      return 'It`s not a palindrome';
-  }
+
+  return 'It`s not palindrome';
 }
