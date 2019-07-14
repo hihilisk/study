@@ -9,5 +9,5 @@ function sortArray(unsortedArray) {
         }
     }
 
-    return unsortedArray;
+  return unsortedArray;
 }
