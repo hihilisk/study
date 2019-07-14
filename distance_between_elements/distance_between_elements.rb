@@ -1,14 +1,16 @@
-def distance_between_elements(array)
+def distance_between_elements(array, item)
   distance_array = []
+  max_range = "элемент #{item} не найден, или массив пуст"
 
-  for j in 0..array.length
-    for i in 0..array.length
-      if array[j] == array[i]
-        distance_array.push(i - j)
-        distance_array.max
-      end
+  for i in 0..array.size
+    if item == array[i]
+      distance_array.push(i)
     end
   end
 
-  distance_array.max
+  if distance_array.size > 0
+    max_range = distance_array[-1] - distance_array[0]
+  end
+
+  max_range
 end

@@ -1,15 +1,18 @@
-function betweenDistance(array) {
+function betweenDistance(array,item) {
   let distanceArray = [];
-  let maxRange;
+  let maxRange = 'элемент ' + item + ' не найден, или массив пуст';
 
-  for (let i = 0; i < array.length; i++ ) {
-    for (let j = i; j < array.length; j++) {
-      if (array[i] == array[j]) {
-        distanceArray.push(j - i);
-      }
+  for (let j = 0; j < array.length; j++) {
+    if (item === array[j]) {
+      distanceArray.push(j);
     }
   }
 
-  maxRange = Math.max.apply(null, distanceArray);
+  if (distanceArray.length > 0) {
+    maxRange = distanceArray[distanceArray.length -1] - distanceArray[0];
+
+    return maxRange
+  }
+
   return maxRange;
 }
