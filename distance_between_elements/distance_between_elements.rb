@@ -9,7 +9,7 @@ def distance_between_elements(array, item)
   end
 
   if distance_array.size == 1
-    max_range = distance_array[0]
+    max_range = distance_array[0] - 1
     else if distance_array.size > 1
       max_range = distance_array[-1] - distance_array[0]
     end

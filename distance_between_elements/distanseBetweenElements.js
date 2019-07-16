@@ -9,7 +9,7 @@ function betweenDistance(array,item) {
   }
 
   if (distanceArray.length === 1) {
-    maxRange = distanceArray[0];
+    maxRange = distanceArray[0] - 1;
 
     return maxRange;
   } else if (distanceArray.length > 1) {
