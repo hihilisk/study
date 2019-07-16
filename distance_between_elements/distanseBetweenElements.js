@@ -2,7 +2,7 @@ function betweenDistance(array,item) {
   let distanceArray = [];
   let maxRange = 'элемент ' + item + ' не найден, или массив пуст';
 
-  for (let j = 0; j < array.length - 1; j++) {
+  for (let j = 0; j < array.length; j++) {
     if (item === array[j]) {
       distanceArray.push(j);
     }
