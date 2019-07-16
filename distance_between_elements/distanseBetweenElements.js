@@ -8,10 +8,14 @@ function betweenDistance(array,item) {
     }
   }
 
-  if (distanceArray.length > 0) {
+  if (distanceArray.length === 1) {
+    maxRange = distanceArray[0];
+
+    return maxRange;
+  } else if (distanceArray.length > 1) {
     maxRange = distanceArray[distanceArray.length -1] - distanceArray[0];
 
-    return maxRange
+    return maxRange;
   }
 
   return maxRange;
