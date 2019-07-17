@@ -58,6 +58,3 @@ class BotForTaxi
     @taxi_car = @taxi_car.flatten[1]
   end
 end
-p = BotForTaxi.new(8, 15)
-
-p p.create_message
