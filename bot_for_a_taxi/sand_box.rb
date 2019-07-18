@@ -5,13 +5,6 @@ class BotForTaxi
     @into = 0
   end
 
-  def request_route(from = 0, into = 0)
-    p 'Где вы находитесь?:'
-    @from = gets.chomp
-    p 'Куда вам нужно?:'
-    @into = gets.chomp
-  end
-
   def grasp_intentions_client(message_client)
     dictionary = { :talking => ['привет', 'здравствуйте', 'подскажите'],
                    :waiting_time => ['когда', 'ждать', 'через'],
@@ -27,20 +20,25 @@ class BotForTaxi
       p 'Здравствуйте. Если вам нужна подсказка, введите "помощь"'
       _start_talking = gets.chomp
       _start_talking == nil ? grasp_intentions_client('привет') : grasp_intentions_client(_start_talking)
+
     when 'waiting_time'
       calculate_time_waiting
       p "#{@time_h > 0 ? "Время ожидания #{@time_h} ч, #{@time_m} минут." : "Время ожидания около #{@time_m} минут."}"
       validation_entered_date
+
     when 'time_trip'
       calculate_time_trip
       p "#{@time_trip_h > 0 ? "Приммерное время поездки #{@time_trip_h} ч, #{@time_trip_m} минут." : "Время поездки около #{@time_trip_m} минут."}"
       validation_entered_date
+
     when 'coast'
       calculate_coast
       p "Стоимость поездки #{(@coast % 5 || @coast % 0) ? "#{@coast} рублей" : "#{@coast} рубля"}."
       validation_entered_date
+
     when 'to_order'
       validation_entered_date
+
     else
       p 'Пожалуйста, повторите вопрос. Если вы хотите узнать:' \
       'Время подачи машины, ваш вопрос должен содержать одно из следующих слов: "когда", "ждать", "через"' \
@@ -52,25 +50,11 @@ class BotForTaxi
     end
   end
 
-  # def create_order
-  # end
-
-  protected
-
-  def validation_entered_date
-    if @from != 0 && @into != 0
-      p 'Хотите оформить заказ? Если да, то отправьте "да", в ином случае вы вернетесь в начало'
-      _client_response = gets.chomp
-      if _client_response == 'да'
-        p "Проверьте введенные данные. Начальный адрес: #{@from}, адрес назначения: #{@into}. Если введенные данные совпадают отправьте 'да'"
-        _correct = gets.chomp
-        if _correct == 'да'
-            create_order
-          else
-            request_route
-        end
-      end
-    end
+  def request_route(from = 0, into = 0)
+    p 'Где вы находитесь?:'
+    @from = gets.chomp
+    p 'Куда вам нужно?:'
+    @into = gets.chomp
   end
 
   def calculate_time_waiting
@@ -82,16 +66,21 @@ class BotForTaxi
     time = choice_taxi_car[:distance] / request_average_speed
     @time_h = time.floor
     @time_m = ((time - @time_h) * 100 * 0.6).round
+
+    return @time_h, @time_m
   end
 
   def calculate_time_trip
     time = calculate_distance / request_average_speed
     @time_trip_h = time.floor
     @time_trip_m = ((time - @time_trip_h) * 100 * 0.6).round
+
+    return @time_trip_h, @time_trip_m
   end
 
-  def request_average_speed
-    @average_speed = 60.0
+  def calculate_coast
+    rate = 2
+    @coast = (calculate_distance + choice_taxi_car[:distance]) / rate
   end
 
   def calculate_distance
@@ -99,11 +88,6 @@ class BotForTaxi
       request_route
     end
     @distance_trip = (@from.to_i - @into.to_i).abs
-  end
-
-  def calculate_coast
-    rate = 2
-    @coast = (calculate_distance + choice_taxi_car[:distance]) / rate
   end
 
   def choice_taxi_car
@@ -115,7 +99,45 @@ class BotForTaxi
     @taxi_car = @taxi_car.min_by { |_key, car| car[:distance] }
     @taxi_car = @taxi_car.flatten[1]
   end
-end
 
-p p = BotForTaxi.new
-p p.grasp_intentions_client('привет')
+  def request_average_speed
+    @average_speed = 60.0
+  end
+
+  def validation_entered_date
+    if @from != 0 || @into != 0
+      p 'Хотите оформить заказ? Если да, то отправьте "да", в ином случае вы вернетесь в начало'
+      _client_response = gets.chomp
+      if _client_response == 'да'
+        p "Проверьте введенные данные. Начальный адрес: #{@from}, адрес назначения: #{@into}. Если введенные данные совпадают отправьте 'да'"
+        _correct = gets.chomp
+        if _correct == 'да'
+          created_order
+        else
+          request_route
+        end
+      else
+        grasp_intentions_client('привет')
+      end
+    else
+      request_route
+      validation_entered_date
+    end
+  end
+
+  def created_order
+    _taxi= choice_taxi_car
+    _time_trip = calculate_time_trip
+    _time_waiting = calculate_time_waiting
+    _coast = calculate_coast
+    @order_data = { from: @from, into: @into, distance: @distance_trip, time_trip: _time_trip, time_waiting: _time_waiting, coast: @coast, taxi_car: @taxi_car }
+    create_message
+  end
+
+  def create_message
+    "Спасибо за ожидание, ваша машина #{@order_data[:taxi_car][:color]} #{@order_data[:taxi_car][:model]} гос. номер: #{@order_data[:taxi_car][:number]}" \
+    " Стоимость поездки #{(@order_data[:coast] % 5 || @order_data[:coast] % 0) ? "#{@order_data[:coast]} рублей" : "#{@order_data[:coast]} рубля"}." \
+    " #{@order_data[:time_waiting][0] > 0 ? "Транспорт будет через #{@order_data[:time_waiting][0]} ч, #{@order_data[:time_waiting][1]} минут." : "Транспорт будет через #{@order_data[:time_waiting][1]} минут."}" \
+    " #{@order_data[:time_trip][0] > 0 ? "Приммерное время поездки #{@order_data[:time_trip][0]} ч, #{@order_data[:time_trip][1]} минут." : "Время поездки около #{@order_data[:time_trip][1]} минут."}"
+  end
+end
