@@ -15,7 +15,7 @@ class BotForTaxi
   def grasp_intentions_client(message_client)
     dictionary = { :talking => ['привет', 'здравствуйте', 'подскажите'],
                    :waiting_time => ['когда', 'ждать', 'через'],
-                   :time_trip => ['время', 'ехать'],
+                   :time_trip => ['время', 'ехать', 'времени'],
                    :coast => ['цена', 'стоимость', 'стоит'],
                    :to_order => ['заказать', 'вызвать'] }
     message_client =message_client.downcase
@@ -24,40 +24,54 @@ class BotForTaxi
 
     case found_word
     when 'talking'
-      'Здравствуйте. Если вам нужна подсказка, введите "помощь"'
+      p 'Здравствуйте. Если вам нужна подсказка, введите "помощь"'
+      _start_talking = gets.chomp
+      _start_talking == nil ? grasp_intentions_client('привет') : grasp_intentions_client(_start_talking)
     when 'waiting_time'
       calculate_time_waiting
-      "#{@time_h > 0 ? "Время ожидания #{@time_h} ч, #{@time_m} минут." : "Время ожидания около #{@time_m} минут."}"
+      p "#{@time_h > 0 ? "Время ожидания #{@time_h} ч, #{@time_m} минут." : "Время ожидания около #{@time_m} минут."}"
+      validation_entered_date
     when 'time_trip'
       calculate_time_trip
-      "#{@time_trip_h > 0 ? "Приммерное время поездки #{@time_trip_h} ч, #{@time_trip_m} минут." : "Время поездки около #{@time_trip_m} минут."}"
+      p "#{@time_trip_h > 0 ? "Приммерное время поездки #{@time_trip_h} ч, #{@time_trip_m} минут." : "Время поездки около #{@time_trip_m} минут."}"
+      validation_entered_date
     when 'coast'
       calculate_coast
-      "Стоимость поездки #{(@coast % 5 || @coast % 0) ? "#{@coast} рублей" : "#{@coast} рубля"}."
+      p "Стоимость поездки #{(@coast % 5 || @coast % 0) ? "#{@coast} рублей" : "#{@coast} рубля"}."
+      validation_entered_date
     when 'to_order'
-
+      validation_entered_date
     else
-      'Пожалуйста, повторите вопрос. Если вы хотите узнать:' \
+      p 'Пожалуйста, повторите вопрос. Если вы хотите узнать:' \
       'Время подачи машины, ваш вопрос должен содержать одно из следующих слов: "когда", "ждать", "через"' \
       'Время пути из пункта А в пункт Б, ваш вопрос должен содержать: "время", "ехать"' \
       'Стоимость поездки из пункта А в пукнт Б, ваш вопрос должен содержать: "цена", "стоимость", "стоИт"' \
-      'Если вы хотите заказать такси: укажите куда подать такси и место назначения' \
+      'Если вы хотите заказать такси: укажите куда подать такси и место назначения'
+      _start_talking = gets.chomp
+      _start_talking == nil ? grasp_intentions_client('привет') : grasp_intentions_client(_start_talking)
     end
   end
 
-  def create_message
-    request_average_speed
-    calculate_distance
-    calculate_coast
-    choice_taxi_car
-    calculate_time_waiting
-    calculate_time_trip
-    @message = "Здравствуйте, ваше такси в пути. "
-
-    "Ваша машина: #{choice_taxi_car[:model]} #{choice_taxi_car[:color]} цвета, гос номер: #{choice_taxi_car[:number]}."
-  end
+  # def create_order
+  # end
 
   protected
+
+  def validation_entered_date
+    if @from != 0 && @into != 0
+      p 'Хотите оформить заказ? Если да, то отправьте "да", в ином случае вы вернетесь в начало'
+      _client_response = gets.chomp
+      if _client_response == 'да'
+        p "Проверьте введенные данные. Начальный адрес: #{@from}, адрес назначения: #{@into}. Если введенные данные совпадают отправьте 'да'"
+        _correct = gets.chomp
+        if _correct == 'да'
+            create_order
+          else
+            request_route
+        end
+      end
+    end
+  end
 
   def calculate_time_waiting
     if @from == 0
@@ -105,7 +119,3 @@ end
 
 p p = BotForTaxi.new
 p p.grasp_intentions_client('привет')
-p p.grasp_intentions_client('')
-p p.grasp_intentions_client('когда')
-p p.grasp_intentions_client('время')
-p p.grasp_intentions_client('цена')
