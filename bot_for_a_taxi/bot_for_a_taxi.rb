@@ -1,8 +1,45 @@
 class BotForTaxi
 
-  def initialize(from, into)
-    @from = from
-    @into = into
+  def request_route(from = 0, into = 0)
+    p 'Где вы находитесь?:'
+    @from = gets.chomp
+    p 'Куда вам нужно?:'
+    @into = gets.chomp
+  end
+
+  def talking_bot
+    def grasp_intentions_client(message_client)
+      dictionary = { :talking => ['привет', 'здравствуйте', 'подскажите'],
+                     :waiting_time => ['когда', 'ждать', 'через'],
+                     :time_trip => ['время', 'ехать'],
+                     :coast => ['цена', 'стоимость', 'стоит'],
+                     :to_order => ['заказать', 'вызвать'] }
+      message_client =message_client.downcase
+      found_word = (message_client.split & dictionary.flatten(2)).join
+      found_word = ((dictionary.select { |_key, value| value.include? found_word}).flatten[0]).to_s
+
+      case found_word
+        when 'talking'
+          'Здравствуйте. Если вам нужна подсказка, введите "помощь"'
+        when 'waiting_time'
+          calculate_time_waiting
+          "#{@time_h >= 1 ? "Время ожидания #{@time_h} ч, #{@time_m} минут." : "Время ожидания около #{@time_m} минут."}"
+        when 'time_trip'
+          calculate_time_trip
+          "#{@time_trip_h >= 1 ? "Приммерное время поездки #{@time_h} ч, #{@time_m} минут." : "Примерное время поездки #{@time_m} минут."}"
+        when 'coast'
+          calculate_coast
+          "Стоимость поездки #{@coast >= 100 ? "#{@coast} рублей" : "#{@coast} рубля"}."
+        when 'to_order'
+
+        else
+          'Пожалуйста, повторите вопрос. Если вы хотите узнать:' \
+        'Время подачи машины, ваш вопрос должен содержать одно из следующих слов: "когда", "ждать", "через"' \
+        'Время пути из пункта А в пункт Б, ваш вопрос должен содержать: "время", "ехать"' \
+        'Стоимость поездки из пункта А в пукнт Б, ваш вопрос должен содержать: "цена", "стоимость", "стоИт"' \
+        'Если вы хотите заказать такси: укажите куда подать такси и место назначения' \
+      end
+    end
   end
 
   def create_message
@@ -12,24 +49,26 @@ class BotForTaxi
     choice_taxi_car
     calculate_time_waiting
     calculate_time_trip
-    @message = "Здравствуйте, ваше такси в пути. #{@time_h >= 1 ? "Время ожидания #{@time_h} ч, #{@time_m} минут." : "Время ожидания около #{@time_m} минут."}" \
-               "Стоимость поездки #{calculate_coast >= 100 ? "#{calculate_coast} рублей" : "#{calculate_coast} рубля"}." \
-               "#{@time_trip_h >= 1 ? "Приммерное время поездки #{@time_h} ч, #{@time_m} минут." : "Примерное время поездки #{@time_m} минут."}" \
+    @message = "Здравствуйте, ваше такси в пути. "
+
                "Ваша машина: #{choice_taxi_car[:model]} #{choice_taxi_car[:color]} цвета, гос номер: #{choice_taxi_car[:number]}."
   end
 
   protected
 
   def calculate_time_waiting
-    distance_to_taxi = choice_taxi_car[:distance]
-    time = distance_to_taxi / request_average_speed
+    if @from == 0
+      p 'Где вы находитесь?:'
+      @from = gets.chomp
+    end
+
+    time = choice_taxi_car[:distance] / request_average_speed
     @time_h = time.floor
     @time_m = ((time - @time_h) * 100 * 0.6).round
   end
 
   def calculate_time_trip
-    distance = calculate_distance
-    time = distance / request_average_speed
+    time = calculate_distance / request_average_speed
     @time_trip_h = time.floor
     @time_trip_m = ((time - @time_h) * 100 * 0.6).round
   end
@@ -39,13 +78,15 @@ class BotForTaxi
   end
 
   def calculate_distance
+    if @from == 0 || @into == 0
+      request_route
+    end
     @distance_trip = (@from - @into).abs
   end
 
   def calculate_coast
     rate = 2
-    remoteness_car = choice_taxi_car
-    @coast = (@distance_trip + remoteness_car[:distance]) / rate
+    @coast = (calculate_distance + choice_taxi_car[:distance]) / rate
   end
 
   def choice_taxi_car
