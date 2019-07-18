@@ -10,8 +10,9 @@ class BotForTaxi
                    :waiting_time => ['когда', 'ждать', 'через'],
                    :time_trip => ['время', 'ехать', 'времени'],
                    :coast => ['цена', 'стоимость', 'стоит'],
-                   :to_order => ['заказать', 'вызвать'] }
-    message_client =message_client.downcase
+                   :to_order => ['заказать', 'вызвать'],
+                   :reset => ['забудь', 'сброс'] }
+    message_client = message_client.downcase
     found_word = (message_client.split & dictionary.flatten(2)).join
     found_word = ((dictionary.select { |_key, value| value.include? found_word}).flatten[0]).to_s
 
@@ -39,12 +40,16 @@ class BotForTaxi
     when 'to_order'
       validation_entered_date
 
+    when 'reset'
+      reset
+
     else
       p 'Пожалуйста, повторите вопрос. Если вы хотите узнать:' \
       'Время подачи машины, ваш вопрос должен содержать одно из следующих слов: "когда", "ждать", "через"' \
       'Время пути из пункта А в пункт Б, ваш вопрос должен содержать: "время", "ехать"' \
       'Стоимость поездки из пункта А в пукнт Б, ваш вопрос должен содержать: "цена", "стоимость", "стоИт"' \
-      'Если вы хотите заказать такси: укажите куда подать такси и место назначения'
+      'Если вы хотите заказать такси: укажите куда подать такси и место назначения' \
+      'Что бы сбросить заказ отправьте "забудь" или "сброс"'
       _start_talking = gets.chomp
       _start_talking == nil ? grasp_intentions_client('привет') : grasp_intentions_client(_start_talking)
     end
@@ -91,9 +96,9 @@ class BotForTaxi
   end
 
   def choice_taxi_car
-    taxi_car_location = { 1 => { model: 'Hyundai solaris', color: 'серого', number: 'x161xx161', distance: 5 },
-                          2 => { model: 'Lada Kalina', color: 'черного', number: 'x162xx162', distance: 10 },
-                          3 => { model: 'Lada Granta', color: 'серого', number: 'x163xx163', distance: 15 } }
+    taxi_car_location = { 1 => { model: 'Hyundai solaris', color: 'серая', number: 'x161xx161', distance: 5 },
+                          2 => { model: 'Lada Kalina', color: 'черная', number: 'x162xx162', distance: 10 },
+                          3 => { model: 'Lada Granta', color: 'белая', number: 'x163xx163', distance: 15 } }
 
     @taxi_car = taxi_car_location.each { |_key, car| car[:distance] = (car[:distance] - @from.to_i).abs }
     @taxi_car = @taxi_car.min_by { |_key, car| car[:distance] }
@@ -115,9 +120,10 @@ class BotForTaxi
           created_order
         else
           request_route
+          validation_entered_date
         end
       else
-        grasp_intentions_client('привет')
+        grasp_intentions_client(_client_response)
       end
     else
       request_route
@@ -139,5 +145,11 @@ class BotForTaxi
     " Стоимость поездки #{(@order_data[:coast] % 5 || @order_data[:coast] % 0) ? "#{@order_data[:coast]} рублей" : "#{@order_data[:coast]} рубля"}." \
     " #{@order_data[:time_waiting][0] > 0 ? "Транспорт будет через #{@order_data[:time_waiting][0]} ч, #{@order_data[:time_waiting][1]} минут." : "Транспорт будет через #{@order_data[:time_waiting][1]} минут."}" \
     " #{@order_data[:time_trip][0] > 0 ? "Приммерное время поездки #{@order_data[:time_trip][0]} ч, #{@order_data[:time_trip][1]} минут." : "Время поездки около #{@order_data[:time_trip][1]} минут."}"
+  end
+
+  def reset
+    @from = 0
+    @into = 0
+    grasp_intentions_client('привет')
   end
 end
