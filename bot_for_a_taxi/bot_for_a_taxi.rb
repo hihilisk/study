@@ -34,12 +34,11 @@ class TaxiToolkit
   end
 
   def choice_taxi_car
-    taxi_car_location = { 1 => { model: 'Hyundai solaris', color: 'grey', number: 'x161xx161', distance: 5 },
-                          2 => { model: 'Lada Kalina', color: 'black', number: 'x162xx162', distance: 10 },
-                          3 => { model: 'Lada Granta', color: 'white', number: 'x163xx163', distance: 15 } }
+    taxi_car_location = [ { model: 'Hyundai solaris', color: 'grey', number: 'x161xx161', distance: 5 },
+                          { model: 'Lada Kalina', color: 'black', number: 'x162xx162', distance: 10 },
+                          { model: 'Lada Granta', color: 'white', number: 'x163xx163', distance: 15 } ]
 
-    @taxi_car = taxi_car_location.each { |key, car| car[:distance] = (car[:distance] - @from.to_i).abs }
-    @taxi_car = @taxi_car.min_by { |key, car| car[:distance] }
-    @taxi_car = @taxi_car.flatten[1]
+    @taxi_car = taxi_car_location.each { |car| car[:distance] = (car[:distance] - @from.to_i).abs }
+    @taxi_car = @taxi_car.min_by { |car| car[:distance] }
   end
 end
