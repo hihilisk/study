@@ -1,26 +1,36 @@
 class TaxiToolkit
+  attr_reader :from, :into, :time_waiting, :time_trip, :taxi_car, :coast, :distance_trip
+
   def initialize(from, into)
     @from = from
     @into = into
+    calculate_distance
+    choice_taxi_car
+    request_average_speed
+    calculate_coast
+    calculate_time_trip
+    calculate_time_waiting
   end
 
+  private
+
   def calculate_time_waiting
-    @time_waiting = choice_taxi_car[:distance] / request_average_speed
+    @time_waiting = @taxi_car[:distance] / @average_speed
     @time_waiting = "#{@time_waiting.floor}h. #{((@time_waiting - @time_waiting.floor) * 60).round}min."
   end
 
   def calculate_time_trip
-    @time_trip = calculate_distance / request_average_speed
+    @time_trip = @distance_trip.to_i / @average_speed
     @time_trip = "#{@time_trip.floor}h. #{((@time_trip - @time_trip.floor) * 60).round}min."
   end
 
   def calculate_coast
     rate = 8
-    @coast = "#{(calculate_distance + choice_taxi_car[:distance]) / rate} USD"
+    @coast = "#{(@distance_trip.to_i + @taxi_car[:distance]) / rate} USD"
   end
 
   def calculate_distance
-    @distance_trip = (@from - @into).abs
+    @distance_trip = "#{(@from - @into).abs} km"
   end
 
   def choice_taxi_car
@@ -35,16 +45,5 @@ class TaxiToolkit
 
   def request_average_speed
     @average_speed = 60.0
-  end
-
-  def reset
-    @from = 0
-    @into = 0
-    @taxi_car = nil
-    @time_waiting = nil
-    @time_trip = nil
-    @distance_trip = nil
-    @coast = nil
-    @average_speed = nil
   end
 end
