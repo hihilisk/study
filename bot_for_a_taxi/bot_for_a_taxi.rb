@@ -1,6 +1,7 @@
 class TaxiBot
   attr_reader :distance
   AVERAGE_SPEED = 60
+  RATE = (rand * 10).round(2)
 
   def initialize(point_a, point_b)
     @point_a = point_a
@@ -9,8 +10,7 @@ class TaxiBot
   end
 
   def price
-    rate = (rand * 10).round(2)
-    @coast = "#{((select_car[:distance] + @distance.to_i) / rate).round(2)} $"
+    @coast = "#{((select_car[:distance] + @distance.to_i) / RATE).round(2)} $"
   end
 
   def waiting_car_time
