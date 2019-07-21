@@ -10,19 +10,15 @@ def creating_hash
   letter_range.each { |i| @array_latter.merge!({ i => [] }) }
 end
 
-def loading_dictionary_to_hash
+def create_dictionary_to_hash
   @array_latter.each do |key, value|
     @array_dictionary.each do |element|
-      x = element.slice(0)
-      y = key.to_s
-      if x == y
+      if element.slice(0) == key.to_s
         @array_latter[key] = value.push(element)
       end
     end
   end
-end
 
-def creating_hash_dictionary_file
   File.write('hash_dictionary.json', @array_latter.to_json)
 end
 
@@ -35,15 +31,11 @@ def spellchecking(string)
   result_string = []
 
   temp_string.each do |word|
-    @array_latter.each do |key, v|
-      word_slice = word.slice(0)
+    first_symbol = word.slice(0)
 
-      if key == word_slice
-        v.each do |value|
-          if word == value
-            result_string.push(word)
-          end
-        end
+    @array_latter[first_symbol].each do |value|
+      if word == value
+        result_string.push(word)
       end
     end
   end
@@ -51,6 +43,6 @@ def spellchecking(string)
   if temp_string - result_string == 0
     'no errors in word`s`'
   else
-    "in word '#{result_string.join('; ')}' there are mistakes, or these word`s no in the dictionary"
+    "in word '#{(temp_string - result_string).join('; ')}' there are mistakes, or these word`s no in the dictionary"
   end
 end
