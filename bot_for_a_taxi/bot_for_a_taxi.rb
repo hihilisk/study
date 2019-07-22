@@ -8,7 +8,8 @@ class TaxiBot
   end
 
   def operator
-    Operator.new
+    @operator = Operator.new
+    @operator.requesting_data
   end
 
   def distance
@@ -36,7 +37,11 @@ class TaxiBot
 end
 
 class Operator
-  def initialize(name = 'Alisa', age = 23, male = 'female', avatar_img = './random_img')
-    @name, @age, @male, @avatar_img = name, age, male, avatar_img
+  def initialize(name = 'Alisa', age = 23, sex = 'female', avatar_img = './random_img')
+    @name, @age, @sex, @avatar_img = name, age, sex, avatar_img
+  end
+
+  def requesting_data
+    @name; @age; @sex; @avatar_img
   end
 end
