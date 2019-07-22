@@ -1,16 +1,22 @@
 class TaxiBot
-  attr_reader :distance
   AVERAGE_SPEED = 60
   RATE = (rand * 10).round(2)
 
   def initialize(point_a, point_b)
     @point_a = point_a
     @point_b = point_b
-    @distance = "#{(@point_a - @point_b).abs} km"
+  end
+
+  def operator
+    Operator.new
+  end
+
+  def distance
+    (@point_a - @point_b).abs
   end
 
   def price
-    @coast = "#{((select_car[:distance] + @distance.to_i) / RATE).round(2)} $"
+    "#{((select_car[:distance] + distance) / RATE).round(2)} $"
   end
 
   def waiting_car_time
@@ -26,5 +32,11 @@ class TaxiBot
 
     @taxi_car = taxi_car_location.each { |car| car[:distance] = (car[:distance] - @point_a.to_i).abs }
     @taxi_car = @taxi_car.min_by { |car| car[:distance] }
+  end
+end
+
+class Operator
+  def initialize(name = 'Alisa', age = 23, male = 'female', avatar_img = './random_img')
+    @name, @age, @male, @avatar_img = name, age, male, avatar_img
   end
 end
