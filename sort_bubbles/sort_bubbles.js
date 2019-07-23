@@ -1,15 +1,13 @@
 function sortArray(unsortedArray) {
-  for (let j = 0; j < unsortedArray.length - 1; j + 1){
-    for (let i = 0; i < j; i + 1) {
-      let currentElement = unsortedArray[i];
-      let nextElement = unsortedArray[i+ 1];
-
-      if (currentElement > nextElement) {
-        let temp = currentElement;
-        currentElement= nextElement;
-        nextElement = temp;
-        console.log(unsortedArray);
-      }
+    for (let j = 0; j < unsortedArray.length - 1; j++) {
+        for (let i = 0; i < unsortedArray.length - 1; i++) {
+            if (unsortedArray[i] > unsortedArray[i +1]) {
+                let temp = unsortedArray[i];
+                unsortedArray[i] = unsortedArray[i + 1];
+                unsortedArray[i + 1] = temp;
+            }
+        }
     }
-  }
+
+    return unsortedArray;
 }
