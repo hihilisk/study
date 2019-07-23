@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require './class_operator.rb'
+
 class TaxiBot
   AVERAGE_SPEED = 60
   RATE = (rand * 10).round(2)
@@ -8,40 +12,52 @@ class TaxiBot
   end
 
   def operator
-    @operator = Operator.new
-    @operator.requesting_data
+    @operator_taxi
+  end
+
+  def creating_operator(name = nil, age = nil, sex = nil, avatar_img = nil)
+    @operator_taxi = Operator.new(name, age, sex, avatar_img)
   end
 
   def distance
-    (@point_a - @point_b).abs
+    "#{calculate_distance} km"
   end
 
   def price
-    "#{((select_car[:distance] + distance) / RATE).round(2)} $"
+    "#{calculate_price} $"
   end
 
   def waiting_car_time
-    "#{select_car[:distance] / AVERAGE_SPEED * 60} minutes"
+    "#{calculate_waiting_car_time} minutes"
+  end
+
+  def taxi_car
+    selecting_taxi
   end
 
   private
 
-  def select_car
-    taxi_car_location = [{ model: 'Hyundai solaris', color: 'grey', number: 'x161xx161', distance: 15 },
-                         { model: 'Lada Kalina', color: 'black', number: 'x162xx162', distance: 25 },
-                         { model: 'Lada Granta', color: 'white', number: 'x163xx163', distance: 35 }]
-
-    @taxi_car = taxi_car_location.each { |car| car[:distance] = (car[:distance] - @point_a.to_i).abs }
-    @taxi_car = @taxi_car.min_by { |car| car[:distance] }
-  end
-end
-
-class Operator
-  def initialize(name = 'Alisa', age = 23, sex = 'female', avatar_img = './random_img')
-    @name, @age, @sex, @avatar_img = name, age, sex, avatar_img
+  def calculate_price
+    ((selecting_taxi[:distance] + calculate_distance) / RATE).round(2)
   end
 
-  def requesting_data
-    @name; @age; @sex; @avatar_img
+  def calculate_distance
+    (@point_a - @point_b).abs
+  end
+
+  def calculate_waiting_car_time
+    selecting_taxi[:distance] / AVERAGE_SPEED * 60
+  end
+
+  def distance_from_car_to_point_a
+    taxi_location = [{ model: 'Hyundai solaris', color: 'grey', number: 'x161xx161', distance: 15 },
+                     { model: 'Lada Kalina', color: 'black', number: 'x162xx162', distance: 25 },
+                     { model: 'Lada Granta', color: 'white', number: 'x163xx163', distance: 35 }]
+
+    taxi_location.each { |car| car[:distance] = (car[:distance] - @point_a.to_i).abs }
+  end
+
+  def selecting_taxi
+    distance_from_car_to_point_a.min_by { |car| car[:distance] }
   end
 end
