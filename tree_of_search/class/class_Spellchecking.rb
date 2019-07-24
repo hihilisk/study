@@ -6,7 +6,7 @@ class Spellchecking
 
   def check_spelling(hash_dictionary)
     @temp_string.each do |word|
-      first_symbol = word.slice(0)
+      first_symbol = word.slice(0).to_sym
 
       hash_dictionary[first_symbol].each do |true_word|
         @result_string.push(word) if true_word == word

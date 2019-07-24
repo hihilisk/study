@@ -7,6 +7,6 @@ dictionary.loading_hash_dictionary
 
 string = Spellchecking.new('аптека улица удав нИт такова слофа')
 
-string.check_spelling(dictionary.hash_dictionary)
+string.check_spelling(dictionary.loading_hash_dictionary)
 
 p string.return_result
