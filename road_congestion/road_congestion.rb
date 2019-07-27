@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class RoadLoadChecker
-  def initialize(array_of_points)
-    @array_car_position = array_of_points
+  def initialize(points)
+    @array_car_position = points
   end
 
   def show_road_load_in_points
@@ -15,7 +15,7 @@ class RoadLoadChecker
     distance_between_cars = []
 
     @array_car_position.each do |i|
-    break if i > @array_car_position.size - 1
+      break if i > @array_car_position.size - 1
 
       distance_between_two_cars = (@array_car_position[i] - @array_car_position[i + 1]).abs
       distance_between_cars.push(distance_between_two_cars)
